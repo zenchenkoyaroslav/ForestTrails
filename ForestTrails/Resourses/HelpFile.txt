@@ -1,0 +1,24 @@
+﻿General:
+	If you hold mouse cursor over the Crossroad you will see its name
+	and coordinates.
+
+	If you hold mouse cursor over the Road you will see its name
+	and length.
+
+	You can find Crossroad by name with search field on the top.
+Run Mode:
+	In Run Mode you can Open graph-file or Save drawn graph to file.
+
+	In order to find the shotest path between chosen Camp and Bus Stop, 
+	you must to click on Camp mark first, and on Bus Stop mark then. It will
+	highlight the roads on the shotest path. To unhighlight roads you can click
+	Reset Paths button. 
+
+	Get Direction Matrix button generate txt file with paths from each Camp to
+	each Bus Stop.
+
+	If you click on road, it will be blocked.
+
+	Clear Canvas button delete all graph from canvas.
+Edit Mode:
+	In Edit Mode you can edit existent graph or draw new graph.

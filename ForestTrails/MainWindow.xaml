@@ -1,0 +1,134 @@
+﻿<Window x:Class="ForestTrails.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ForestTrails"
+        mc:Ignorable="d"
+        Title="Forest Trails" ResizeMode="NoResize" Background="#EE5B5F9E" Icon="Resourses/app_icon.png" d:DesignWidth="868" d:DesignHeight="523" Width="Auto" Height="Auto">
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Canvas Name="Canvas" Margin="10,59,142.682,10" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" Background="White"/>
+        <ToolBarTray Name="EditModeTray" Margin="0,139,10,130" Orientation="Vertical" HorizontalAlignment="Right" Width="127.682" Visibility="Collapsed" Height="225">
+            <ToolBarTray.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+            </ToolBarTray.Background>
+            <ToolBar Name="DrawToolBar" Band="1">
+                <ToolBar.Background>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+                </ToolBar.Background>
+                <RadioButton GroupName="DrawRadioGroup" Name="DotRadioButton" ToolTip="Crossroads" IsChecked="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="36">
+                    <Image Height="30" Width="30" Source="Resourses/dot icon.jpg"/>
+                </RadioButton>
+                <RadioButton GroupName="DrawRadioGroup" Name="LineRadioButton" ToolTip="Connection" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="36">
+                    <Image Height="30" Width="30" Source="Resourses/line icon.png"/>
+                </RadioButton>
+            </ToolBar>
+            <ToolBar Name="TypeToolBar" Band="2">
+                <RadioButton GroupName="TypeRadioGroup" Name="SimpleRadioButton" ToolTip="Simple" IsChecked="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="36">
+                    <Image Height="30" Width="30" Source="Resourses/node icon.jpg"/>
+                </RadioButton>
+                <RadioButton GroupName="TypeRadioGroup" Name="CampRadioButton" ToolTip="Camp"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="36">
+                    <Image Height="30" Width="30" Source="Resourses/camp icon.png"/>
+                </RadioButton>
+                <RadioButton GroupName="TypeRadioGroup" Name="BusStopRadioButton" ToolTip="Bus stop" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="36" Height="36">
+                    <Image Height="29" Width="29" Source="Resourses/bus stop icon.png"/>
+                </RadioButton>
+            </ToolBar>
+            <ToolBar Name="ModeToolBar" Band="3">
+                <RadioButton ToolTip="Draw Mode" Name="DrawModeRadioButton" GroupName="ModeTypeRadioGroup" IsChecked="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Image Height="30" Width="30" Source="Resourses/draw icon.png"/>
+                </RadioButton>
+                <RadioButton ToolTip="Edit Mode" x:Name="EditModeRadioButton" GroupName="ModeTypeRadioGroup" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Image Height="30" Width="30" Source="Resourses/edit icon.png"/>
+                </RadioButton>
+                <RadioButton ToolTip="Delete Mode" Name="DeleteModeRadioButton" GroupName="ModeTypeRadioGroup" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Image Height="30" Width="30" Source="Resourses/delete icon.png"/>
+                </RadioButton>
+            </ToolBar>
+        </ToolBarTray>
+        <ToolBarTray HorizontalAlignment="Right" Height="124" Margin="0,10,10,0" VerticalAlignment="Top" Width="127.682" Orientation="Vertical">
+            <ToolBarTray.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+            </ToolBarTray.Background>
+            <ToolBar Name="GlobalModeToolBar" Margin="0,0,-105.015,-114">
+                <RadioButton Checked="GlobalRunModeRadioButton_Checked" IsChecked="True" x:Name="GlobalRunModeRadioButton" GroupName="GlobalModeTypeRadioGroup" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="116.762" Height="45">
+                    <StackPanel Height="35" Width="106.762" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/play icon.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Run Mode" Width="75.373" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                    </StackPanel>
+                </RadioButton>
+                <RadioButton Checked="GlobalEditModeRadioButton_Checked" x:Name="GlobalEditModeRadioButton" GroupName="GlobalModeTypeRadioGroup" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="116.761" Height="45">
+                    <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/edit icon 2.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Edit Mode" Width="75.373" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                    </StackPanel>
+                </RadioButton>
+            </ToolBar>
+        </ToolBarTray>
+        <ToolBarTray Name="RunModeTray" Margin="0,139,10,130" Orientation="Vertical" HorizontalAlignment="Right" Width="127.682">
+            <ToolBarTray.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+            </ToolBarTray.Background>
+            <ToolBar Name="RunModeToolBar">
+                <Button Click="SaveButton_Click" x:Name="SaveButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="116.761" Height="45">
+                    <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/save icon.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Save" Width="75.373" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Click="OpenButton_Click" x:Name="OpenButton"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="116.761" Height="45">
+                    <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/open icon.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Open" Width="75.373" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+            <ToolBar>
+                <Button Name="ResetButton" Click="ResetButton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="110.4">
+                    <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/reset icon.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Reset Paths" Width="75.373" FontSize="14.667" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Click="GenerateMatrixButton_Click" Name="GenerateMatrixButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="111.54">
+                    <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/matrix icon.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Get Direction Matrix" Width="75.373" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32.5" Margin="0,2.5,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="ClearButton" Click="ClearButton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="111.761">
+                    <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
+                        <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/clear icon.png"/>
+                        <TextBlock TextWrapping="Wrap" Text="Clear Canvas" Width="75.373" FontSize="13.333" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Right" Height="116.667" Margin="0,0,10,10" Stroke="Black" VerticalAlignment="Bottom" Width="127.682" RadiusY="10.682" RadiusX="10.682" RenderTransformOrigin="0.5,0.5"/>
+        <Ellipse x:Name="SimpleCrossroadExample" Fill="#FFF4F4F5" HorizontalAlignment="Right" Height="7.5" Margin="0,0,119.167,87.417" Stroke="Black" VerticalAlignment="Bottom" Width="7.5"/>
+        <Ellipse Name="CampCrossroadExample" Fill="#FFF4F4F5" HorizontalAlignment="Right" Height="7.5" Margin="0,0,116.167,65.25" Stroke="Black" VerticalAlignment="Bottom" Width="7.5"/>
+        <Ellipse Name="BusStopCrossroadExample" Fill="#FFF4F4F5" HorizontalAlignment="Right" Height="7.5" Margin="0,0,116.167,45.25" Stroke="Black" VerticalAlignment="Bottom" Width="7.5"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,44.375,84.407" TextWrapping="Wrap" Text="Crossroad" VerticalAlignment="Bottom" Width="61.197"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,44.375,62.24" TextWrapping="Wrap" Text="Camp" VerticalAlignment="Bottom" Width="61.197"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,44.375,45.25" TextWrapping="Wrap" Text="Bus stop" VerticalAlignment="Bottom" Width="61.197"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,56.282,105.367" TextWrapping="Wrap" Text="Legend" VerticalAlignment="Bottom"/>
+        <Rectangle Fill="#FFF4F4F5" Height="44" Margin="10,10,142.682,0" RadiusY="10.682" RadiusX="10.682" Stroke="Black" VerticalAlignment="Top"/>
+        <TextBlock Name="CrossroadsCountText" HorizontalAlignment="Left" Margin="170,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="24.96" Width="43.29" FontSize="16" Text="{Binding GlobalForestPaths.CrossroadsCount, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+        <TextBlock HorizontalAlignment="Left" Height="24.96" Margin="25,20,0,0" TextWrapping="Wrap" Text="Crossroads Count: " VerticalAlignment="Top" Width="140" FontSize="16"/>
+        <TextBlock Name="RoadsCountText" Margin="353,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Height="24.96" Width="40.5" FontSize="16" Text="{Binding GlobalForestPaths.RoadsCount, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="248.5,20,0,0" TextWrapping="Wrap" Text="Roads Count: " VerticalAlignment="Top" Width="94" FontSize="16" Height="24.96"/>
+        <TextBox Name="FindTextBox" Height="23" Margin="419,20,343,0" TextWrapping="Wrap" VerticalAlignment="Top" Tag="Find by name" FontSize="16"/>
+        <Button Name="SearchButton" Click="SearchButton_Click" HorizontalAlignment="Right" Margin="0,14.96,308,0" VerticalAlignment="Top" Width="30" Height="30" ToolTip="Search">
+            <Image Height="25" Width="25" Source="Resourses/search icon.png"/>
+        </Button>
+        <Path Data="M732.5,461.75 L760.75995,461.75" Fill="#FFF4F4F5" HorizontalAlignment="Right" Margin="0,0,110.572,29.25" Stretch="Fill" Stroke="Red" VerticalAlignment="Bottom" Width="26.51" StrokeThickness="5"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,36.242,24.53" TextWrapping="Wrap" Text="Blocked road" VerticalAlignment="Bottom"/>
+        <Button Name="HelpButton" Click="HelpButton_Click" Content="Help" HorizontalAlignment="Right" Margin="0,14.96,181.25,0" VerticalAlignment="Top" Width="87.5" Height="30" FontSize="16"/>
+    </Grid>
+</Window>
