@@ -10,16 +10,84 @@ namespace ForestTrails
     {
         private IComparer<TData> comparerByX;
         private IComparer<TData> comparerByY;
-        private Leaf referenceLeftSibling = null;
 
 
-        CommonNode RootNode { get; set; }
+        Node RootNode { get; set; }
+
+        public TwoDRangeTree(IComparer<TData> comparerByX, IComparer<TData> comparerByY)
+        {
+            this.comparerByX = comparerByX;
+            this.comparerByY = comparerByY;
+        }
 
         public TwoDRangeTree(TData[] datas, IComparer<TData> x, IComparer<TData> y)
+            : this(x, y)
         {
-            comparerByX = x;
-            comparerByY = y;
             RootNode = Build(datas);
+        }
+
+        public void Add(TData data)
+        {
+            if(RootNode == null)
+            {
+                RootNode = new Leaf();
+                (RootNode as Leaf).Data = data;
+            }
+            Add(data, RootNode, true);
+        }
+
+        private void Add(TData data, Node node, bool xDimension)
+        {
+            if(node is CommonNode commonNode)
+            {
+                if (xDimension)
+                {
+                    Add(data, commonNode.OtherDimensionNode, !xDimension);
+                    if(commonNode.RightChild is CommonNode rightChild &&
+                        comparerByX.Compare(rightChild.Min, data) <= 0)
+                    {
+                        Add(data, rightChild, xDimension);
+                    }
+                    else
+                    {
+                        Add(data, commonNode.LeftChild, xDimension);
+                    }
+                }
+                else
+                {
+                    if(commonNode.RightChild is CommonNode rightChild &&
+                        comparerByY.Compare(rightChild.Min, data) <= 0)
+                    {
+                        Add(data, rightChild, xDimension);
+                    }
+                    else
+                    {
+                        Add(data, commonNode.LeftChild, xDimension);
+                    }
+                }
+            }
+            else
+            {
+                Leaf leaf = node as Leaf;
+                CommonNode parent = leaf.Parent;
+                TData[] datas = { data, leaf.Data };
+                if (parent == null)
+                {
+                    RootNode = BuildSubtree(datas, parent, xDimension);
+                }
+                else if (leaf == parent.LeftChild) 
+                {
+                    parent.LeftChild = BuildSubtree(datas, parent, xDimension);
+                }
+                else
+                {
+                    parent.RightChild = BuildSubtree(datas, parent, xDimension);
+                }
+                if (xDimension)
+                {
+                    // TODO: increase elements number
+                }
+            }
         }
 
         private CommonNode Build(TData[] datas)
@@ -67,12 +135,13 @@ namespace ForestTrails
             {
                 Leaf leaf = new Leaf();
                 leaf.Data = datas.First();
-                if(referenceLeftSibling != null)
+
+                Leaf leftSibling = GetLeftSibling(leaf);
+                if(leftSibling != null)
                 {
-                    referenceLeftSibling.RightSibling = leaf;
-                    leaf.LeftSibling = referenceLeftSibling;
+                    leftSibling.RightSibling = leaf;
+                    leaf.LeftSibling = leftSibling;
                 }
-                referenceLeftSibling = leaf;
                 pointer = leaf;
             }
             
@@ -86,13 +155,65 @@ namespace ForestTrails
             return pointer;
         }
 
-        private abstract class Node
+        private Leaf GetLeftSibling(Leaf leaf)
+        {
+            return GoUp(leaf);
+        }
+
+        private Leaf GoUp(Node node)
+        {
+            if (node.Parent != null)
+            {
+                CommonNode parent = node.Parent;
+                if (parent.LeftChild != node)
+                {
+                    return GoLeft(parent);
+                }
+                else
+                {
+                    return GoUp(parent);
+                }
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+
+        private Leaf GoLeft(CommonNode parent)
+        {
+            Node node = parent.LeftChild;
+            if(node is Leaf leaf)
+            {
+                return leaf;
+            }
+            else
+            {
+                return GoRight(node as CommonNode);
+            }
+        }
+
+        private Leaf GoRight(CommonNode parent)
+        {
+            Node node = parent.RightChild;
+            if(node is Leaf leaf)
+            {
+                return leaf;
+            }
+            else
+            {
+                return GoRight(node as CommonNode);
+            }
+        }
+
+        public abstract class Node
         {
             public bool XDimension { get; set; }
             public CommonNode Parent { get; set; }
         }
 
-        private class CommonNode : Node
+        public class CommonNode : Node
         {
             public TData Min { get; set; }
             public TData Max { get; set; }
@@ -103,7 +224,7 @@ namespace ForestTrails
             
         }
 
-        private class Leaf : Node
+        public class Leaf : Node
         {
             public TData Data { get; set; }
             public Leaf LeftSibling { get; set; }
