@@ -108,6 +108,8 @@ namespace ForestTrails
             }
         }
 
+        
+
         public TData Find(Point point)
         {
             return FindLeaf(point).Data;
@@ -115,10 +117,62 @@ namespace ForestTrails
 
         private Leaf FindLeaf(Point point)
         {
+            double queryX = point.X;
+            double queryY = point.Y;
             if(RootNode != null && RootNode is Leaf root)
             {
-                if(root.Data.point)
+                if(root.Data.point.X == queryX &&
+                    root.Data.point.Y == queryY)
+                {
+                    return root;
+                }
+                else
+                {
+                    return null;
+                }
             }
+            CommonNode pointer = RootNode as CommonNode;
+            while (true)
+            {
+                if (pointer == null) return null;
+                Node child = pointer.LeftChild;
+                if (HasMatch(point, child))
+                {
+                    return child as Leaf;
+                }
+                child = pointer.RightChild;
+                if (HasMatch(point, child))
+                {
+                    return child as Leaf;
+                }
+
+                CommonNode nextPointer = null;
+                if (IsInsideRange(queryX, pointer.LeftChild))
+                {
+                    nextPointer = pointer.LeftChild as CommonNode;
+                }
+                else if (IsInsideRange(queryX, pointer.RightChild))
+                {
+                    nextPointer = pointer.RightChild as CommonNode;
+                }
+                pointer = nextPointer;
+            }
+        }
+
+        private bool IsInsideRange(double queryX, Node node)
+        {
+            return node != null &&
+                node is CommonNode commonNode &&
+                commonNode.Min.point.X <= queryX &&
+                queryX <= commonNode.Max.point.X;
+        }
+
+        private bool HasMatch(Point point, Node node)
+        {
+            return node != null &&
+                node is Leaf leaf &&
+                leaf.Data.point.X == point.X &&
+                leaf.Data.point.Y == point.Y;
         }
 
         public CommonNode Build(TData[] datas)
