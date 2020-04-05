@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace ForestTrails.Paths
 {
-    public interface ICrossroad
+    public interface ICrossroad : IPoint
     {
         Point Position { get; set; }
         string Key { get; set; }
