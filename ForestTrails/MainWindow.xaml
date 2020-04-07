@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ForestTrails"
         mc:Ignorable="d"
-        Title="Forest Trails" ResizeMode="NoResize" Background="#EE5B5F9E" Icon="Resourses/app_icon.png" d:DesignWidth="868" d:DesignHeight="523" Width="Auto" Height="Auto">
+        Title="Forest Trails" ResizeMode="NoResize" Background="#EE5B5F9E" Icon="Resourses/app_icon.png" Width="1050" Height="550">
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
@@ -13,7 +13,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Canvas Name="Canvas" Margin="10,59,142.682,10" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" Background="White"/>
+        <Canvas Name="Canvas" Margin="10,59,142.682,57" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" Background="White"/>
         <ToolBarTray Name="EditModeTray" Margin="0,139,10,130" Orientation="Vertical" HorizontalAlignment="Right" Width="127.682" Visibility="Collapsed" Height="225">
             <ToolBarTray.Background>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
@@ -130,5 +130,15 @@
         <Path Data="M732.5,461.75 L760.75995,461.75" Fill="#FFF4F4F5" HorizontalAlignment="Right" Margin="0,0,110.572,29.25" Stretch="Fill" Stroke="Red" VerticalAlignment="Bottom" Width="26.51" StrokeThickness="5"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,0,36.242,24.53" TextWrapping="Wrap" Text="Blocked road" VerticalAlignment="Bottom"/>
         <Button Name="HelpButton" Click="HelpButton_Click" Content="Help" HorizontalAlignment="Right" Margin="0,14.96,181.25,0" VerticalAlignment="Top" Width="87.5" Height="30" FontSize="16"/>
+        <Rectangle Fill="#FFF4F4F5" Height="44" Margin="10.6,0,142.082,8.75" RadiusY="10.682" RadiusX="10.682" Stroke="Black" VerticalAlignment="Bottom"/>
+        <TextBlock HorizontalAlignment="Left" Margin="25,0,0,21.52" TextWrapping="Wrap" Text="x1:" VerticalAlignment="Bottom"/>
+        <TextBlock HorizontalAlignment="Left" Margin="241.91,0,0,21.52" TextWrapping="Wrap" Text="y2:" VerticalAlignment="Bottom"/>
+        <TextBlock HorizontalAlignment="Left" Margin="168.666,0,0,21.52" TextWrapping="Wrap" Text="x2:" VerticalAlignment="Bottom"/>
+        <TextBlock HorizontalAlignment="Left" Margin="96.978,0,0,21.52" TextWrapping="Wrap" Text="y1:" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="x1TextBox" HorizontalAlignment="Left" Height="23" Margin="44.577,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
+        <TextBox x:Name="y2TextBox" HorizontalAlignment="Left" Height="23" Margin="261.787,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
+        <TextBox x:Name="x2TextBox" HorizontalAlignment="Left" Height="23" Margin="188.243,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
+        <TextBox x:Name="y1TextBox" HorizontalAlignment="Left" Height="23" Margin="114.999,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
+        <Button x:Name="FindButton" Content="Find" HorizontalAlignment="Left" Margin="332.5,0,0,19.52" VerticalAlignment="Bottom" Width="75"/>
     </Grid>
 </Window>
