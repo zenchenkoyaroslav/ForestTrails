@@ -16,6 +16,16 @@ namespace ForestTrails.Paths
         public Point Position { get; set; }
         public string Key { get; set; }
 
+        public double X
+        {
+            get { return Position.X; }
+        }
+
+        public double Y
+        {
+            get { return Position.Y; }
+        }
+
         public Crossroad() { }
 
         public Crossroad(Point point, string key)
