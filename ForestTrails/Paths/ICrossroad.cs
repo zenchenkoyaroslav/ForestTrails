@@ -1,5 +1,5 @@
 ﻿using ForestTrails.Paths.DrawInformation;
-using ForestTrails.TwoDRangeTree;
+using ForestTrails.TwoDRange;
 using System;
 using System.Windows;
 

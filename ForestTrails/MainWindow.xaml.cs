@@ -16,6 +16,7 @@ using System.Runtime.Serialization;
 using System.Windows.Data;
 using System.Text;
 using System.Diagnostics;
+using ForestTrails.TwoDRange;
 
 namespace ForestTrails
 {
@@ -31,6 +32,7 @@ namespace ForestTrails
         public CrossroadContext crossroadContext = new CrossroadContext();
         public HashSet<Line> highlightedLines = new HashSet<Line>();
         public HashSet<Line> deletedLines = new HashSet<Line>();
+        public TwoDRangeTree<ICrossroad, double> GlobalRangeTree;
 
         public MainWindow()
         {
@@ -326,6 +328,8 @@ namespace ForestTrails
                         ForestPaths newForestPath = (ForestPaths)formatter.Deserialize(fs);
                         GlobalForestPaths.Update(newForestPath);
                         DrawForrestPaths();
+                        List<ICrossroad> crossroads = GlobalForestPaths.GetCrossroads();
+
                     }
                     catch (SerializationException)
                     {
