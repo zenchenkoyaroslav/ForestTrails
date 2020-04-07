@@ -32,12 +32,15 @@ namespace ForestTrails
         public CrossroadContext crossroadContext = new CrossroadContext();
         public HashSet<Line> highlightedLines = new HashSet<Line>();
         public HashSet<Line> deletedLines = new HashSet<Line>();
+        private CrossroadComparerByX comparerByX = new CrossroadComparerByX();
+        private CrossroadComparerByY comparerByY = new CrossroadComparerByY();
         public TwoDRangeTree<ICrossroad, double> GlobalRangeTree;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeLegend();
+            GlobalRangeTree = new TwoDRangeTree<ICrossroad, double>(comparerByX, comparerByY);
             using (FileStream fs = new FileStream("./sample.txt", FileMode.Open))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
@@ -329,7 +332,7 @@ namespace ForestTrails
                         GlobalForestPaths.Update(newForestPath);
                         DrawForrestPaths();
                         List<ICrossroad> crossroads = GlobalForestPaths.GetCrossroads();
-
+                        GlobalRangeTree.Build(crossroads.ToArray());
                     }
                     catch (SerializationException)
                     {
