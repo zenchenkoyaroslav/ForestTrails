@@ -1,14 +1,10 @@
-﻿using ForestTrails.Paths;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace ForestTrails.TwoDRange
 {
-    public class TwoDRangeTree<TData, T> 
+    public class TwoDRangeTree<TData, T>
         where TData : ICoordinates<T>
         where T : IComparable
     {
@@ -32,186 +28,72 @@ namespace ForestTrails.TwoDRange
             Build(datas);
         }
 
-
-        public List<TData> FindRange(T x1, T y1, T x2, T y2, ref List<TData> result)
-        {
-            FindRange(x1, y1, x2, y2, RootNode, true, ref result);
-            return result;
-        }
-
-        private void FindRange(T x1, T y1, T x2, T y2, Node node, bool xDimension, ref List<TData> result)
-        {
-            if (node != null)
-            {
-                if (node is Leaf leaf)
-                {
-                    if (IsInsideRangeX(x1, x2, leaf) &&
-                        IsInsideRangeY(y1, y2, leaf))
-                    {
-                        result.Add(leaf.Data);
-                    }
-                }
-                else
-                {
-                    CommonNode common = node as CommonNode;
-                    if (xDimension)
-                    {
-                        if (x1.CompareTo(common.Min) <= 0 &&
-                            common.Max.CompareTo(x2) <= 0)
-                        {
-                            FindRange(x1, y1, x2, y2, common.OtherDimensionNode, !xDimension, ref result);
-                        }
-                        else if (common.Min.CompareTo(x1) <= 0 ||
-                            x2.CompareTo(common.Max) <= 0)
-                        {
-                            FindRange(x1, y1, x2, y2, common.LeftChild, xDimension, ref result);
-                            FindRange(x1, y1, x2, y2, common.RightChild, xDimension, ref result);
-                        }
-                    }
-                    else
-                    {
-                        if (y1.CompareTo(common.Min) <= 0 &&
-                            common.Max.CompareTo(y2) <= 0)
-                        {
-                            LookAllSubtree(x1, y1, x2, y2, common, ref result);
-                        }
-                        else if (common.Min.CompareTo(y1) <= 0 &&
-                            y2.CompareTo(common.Max) <= 0)
-                        {
-                            FindRange(x1, y1, x2, y2, common.LeftChild, xDimension, ref result);
-                            FindRange(x1, y1, x2, y2, common.RightChild, xDimension, ref result);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void LookAllSubtree(T x1, T y1, T x2, T y2, CommonNode node, ref List<TData> result)
-        {
-            Leaf pointer = GetMostLeftChild(node);
-            do
-            {
-                if (IsInsideRangeX(x1, x2, pointer) &&
-                    IsInsideRangeY(y1, y2, pointer))
-                {
-                    result.Add(pointer.Data);
-                }
-                pointer = pointer.RightSibling;
-            } while (pointer != null);
-        }
-
-        private Leaf GetMostLeftChild(CommonNode node)
-        {
-            Node pointer = node.LeftChild;
-            if (pointer is Leaf leaf) return leaf;
-            else return GetMostLeftChild(pointer as CommonNode);
-        }
-
-        public TData Find(T x, T y)
-        {
-            return FindLeaf(x, y).Data;
-        }
-
-        private Leaf FindLeaf(T x, T y)
-        {
-            if(RootNode != null && RootNode is Leaf root)
-            {
-                if(root.Data.X.CompareTo(x) == 0 &&
-                    root.Data.Y.CompareTo(y) == 0)
-                {
-                    return root;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            CommonNode pointer = RootNode as CommonNode;
-            while (true)
-            {
-                if (pointer == null) return null;
-                Node child = pointer.LeftChild;
-                if (HasMatch(x, y, child))
-                {
-                    return child as Leaf;
-                }
-                child = pointer.RightChild;
-                if (HasMatch(x, y, child))
-                {
-                    return child as Leaf;
-                }
-
-                CommonNode nextPointer = null;
-                if (IsInsideRange(x, pointer.LeftChild))
-                {
-                    nextPointer = pointer.LeftChild as CommonNode;
-                }
-                else if (IsInsideRange(x, pointer.RightChild))
-                {
-                    nextPointer = pointer.RightChild as CommonNode;
-                }
-                pointer = nextPointer;
-            }
-        }
-
-        private bool IsInsideRange(T x, Node node)
-        {
-            return node != null &&
-                node is CommonNode commonNode &&
-                commonNode.Min.CompareTo(x) <= 0 &&
-                x.CompareTo(commonNode.Max) <= 0;
-        }
-
-        private bool IsInsideRangeX(T x1, T x2, Leaf leaf)
-        {
-            return x1.CompareTo(leaf.Data.X) <= 0 &&
-                leaf.Data.X.CompareTo(x2) <= 0;
-        }
-
-        private bool IsInsideRangeY(T y1, T y2, Leaf leaf)
-        {
-            return y1.CompareTo(leaf.Data.Y) <= 0 &&
-                leaf.Data.Y.CompareTo(y2) <= 0;
-        }
-
-        private bool HasMatch(T x, T y, Node node)
-        {
-            return node != null &&
-                node is Leaf leaf &&
-                leaf.Data.X.CompareTo(x) == 0 &&
-                leaf.Data.Y.CompareTo(y) == 0;
-        }
-
+        /// <summary>
+        ///  Build method
+        ///  Public method for tree building
+        ///  Call BuildFromRoot method that build the tree
+        ///  and BuildSiblingLinks method that do links between leafs
+        /// </summary>
+        /// <param name="datas">Elements stored in leafs</param>
         public void Build(TData[] datas)
         {
             RootNode = BuildFromRoot(datas);
             BuildSiblingLinks(RootNode);
         }
 
-        private CommonNode BuildFromRoot(TData[] datas)
+        /// <summary>
+        ///  BuildFromRoot method
+        ///  Check if input datas aren't null, 
+        ///  set property Count and call BuildTree method
+        /// </summary>
+        /// <param name="datas">Elements stored in leafs</param>
+        /// <returns>Root of tree</returns>
+        private NavigationalNode BuildFromRoot(TData[] datas)
         {
-            if (datas.Length == 0 || datas == null) return null;
+            if (datas.Length == 0 || datas == null)
+            {
+                Count = 0;
+                return null;
+            }
             Count = datas.Length;
             bool xDimension = true;
-            return (CommonNode) BuildTree(datas, null, xDimension);
+            return (NavigationalNode)BuildTree(datas, null, xDimension);
         }
 
-        private Node BuildTree(TData[] datas, CommonNode otherDimensionNode, bool xDimension)
+        /// <summary>
+        ///  BuildTree method
+        ///  Call BuildSubtree method for X dimension, then for Y dimension
+        /// </summary>
+        /// <param name="datas">Elements stored in leafs</param>
+        /// <param name="otherDimensionNode">X node for Y node</param>
+        /// <param name="xDimension">Dimension where we are. If it's true, it's X</param>
+        /// <returns>Subtree root</returns>
+        private Node BuildTree(TData[] datas, NavigationalNode otherDimensionNode, bool xDimension)
         {
             Node pointer = BuildSubtree(datas, null, xDimension);
-            if(otherDimensionNode != null)
+            if (otherDimensionNode != null)
             {
-                (pointer as CommonNode).OtherDimensionNode = otherDimensionNode;
+                (pointer as NavigationalNode).OtherDimensionNode = otherDimensionNode;
             }
             return pointer;
         }
 
-        private Node BuildSubtree(TData[] datas, CommonNode parent, bool xDimension)
+        /// <summary>
+        ///  BuildSubtree method
+        ///  This method do most of work
+        ///  for tree building.
+        /// </summary>
+        /// <param name="datas">Elements stored in leafs</param>
+        /// <param name="parent">Parent of node, that this method must return</param>
+        /// <param name="xDimension">Dimension where we are. If it's true, it's X</param>
+        /// <returns>Node of tree</returns>
+        private Node BuildSubtree(TData[] datas, NavigationalNode parent, bool xDimension)
         {
             Node pointer = null;
-            if(datas.Length > 1)
+            if (datas.Length > 1)
             {
-                CommonNode node = new CommonNode();
+                // Set range for navigational node
+                NavigationalNode node = new NavigationalNode();
                 if (xDimension)
                 {
                     Array.Sort(datas, comparerByX);
@@ -224,52 +106,77 @@ namespace ForestTrails.TwoDRange
                     node.Min = datas.First().Y;
                     node.Max = datas.Last().Y;
                 }
-                
 
+                // Halve datas. One half of datas go to left subtree
+                // the other one go to right subtree
                 TData[] datasL = datas.Take(datas.Length / 2).ToArray();
                 TData[] datasR = datas.Skip(datas.Length / 2).ToArray();
 
                 node.LeftChild = BuildSubtree(datasL, node, xDimension);
                 node.RightChild = BuildSubtree(datasR, node, xDimension);
+
                 pointer = node;
             }
             else
             {
+                // if datas parametr has only one element
+                // this one will be a leaf
                 Leaf leaf = new Leaf();
                 leaf.Data = datas.First();
                 pointer = leaf;
             }
-            
-            if(xDimension && pointer is CommonNode n)
+
+            // If we are in X dimension and current node is navigational one,
+            // go to Y Dimension and build tree for it
+            if (xDimension && pointer is NavigationalNode navigational)
             {
-                n.OtherDimensionNode = (CommonNode) BuildTree(datas, n, !xDimension);
+                navigational.OtherDimensionNode = (NavigationalNode)BuildTree(datas, navigational, !xDimension);
             }
 
+            // Set parametrs that are common for both leafs and navigational nodes
             pointer.XDimension = xDimension;
             pointer.Parent = parent;
             return pointer;
         }
 
+        /// <summary>
+        ///  BuildSiblingLinks method
+        ///  Build links between leafs
+        /// </summary>
+        /// <param name="node">Current node. Root in first call</param>
         private void BuildSiblingLinks(Node node)
         {
-            if(node is CommonNode common)
+            if (node is NavigationalNode navigationalNode)
             {
-                if (common.XDimension)
+                // Go build links on second dimension for
+                // every navigational nodes
+                if (navigationalNode.XDimension)
                 {
-                    BuildSiblingLinks(common.OtherDimensionNode);
+                    BuildSiblingLinks(navigationalNode.OtherDimensionNode);
                 }
-                BuildSiblingLinks(common.LeftChild);
+                // Go deeper, until get most left leaf.
+                BuildSiblingLinks(navigationalNode.LeftChild);
             }
-            else if(node is Leaf leaf)
+            else if (node is Leaf leaf)
             {
+                // Links build is starting here
                 BuildLinks(leaf);
             }
         }
 
+        /// <summary>
+        ///  BuildLinks method
+        ///  Started with most left leaf
+        ///  and do links for all of them
+        /// </summary>
+        /// <param name="leaf">Current leaf</param>
         private void BuildLinks(Leaf leaf)
         {
+            // Get right sibling of current node
             Leaf rightSibling = GetRightSibling(leaf);
-            if(rightSibling != null)
+            // Set mutual links for current node and
+            // its right sibling
+            if (rightSibling != null)
             {
                 leaf.RightSibling = rightSibling;
                 rightSibling.LeftSibling = leaf;
@@ -277,51 +184,328 @@ namespace ForestTrails.TwoDRange
             }
         }
 
+        /// <summary>
+        ///  GetRightSibling method
+        ///  Find right sibling for
+        ///  current node
+        /// </summary>
+        /// <param name="leaf">Current node</param>
+        /// <returns>Right sibling for current node</returns>
         private Leaf GetRightSibling(Leaf leaf)
         {
             return GoUp(leaf);
         }
 
+        /// <summary>
+        ///  GoUp method
+        ///  Part of GetRightSibling
+        /// </summary>
+        /// <param name="node">Current node</param>
+        /// <returns>Right sibling for current node</returns>
         private Leaf GoUp(Node node)
         {
-            CommonNode pointer = node.Parent;
-            
-            if (pointer == null) return null;
-            if (node == pointer.RightChild)
+            NavigationalNode parent = node.Parent;
+            // We got root via its right child
+            // All leafs are worked out
+            if (parent == null) return null;
+            // If we came via right child, go upper
+            if (node == parent.RightChild)
             {
-                return GoUp(pointer);
+                return GoUp(parent);
             }
             else
             {
-                if(pointer.RightChild is CommonNode commonChild)
+                // If we came via left child go to most left child of right child
+                if (parent.RightChild is NavigationalNode navigationalChild)
                 {
-                    return GetMostLeftChild(commonChild);
+                    return GetMostLeftChild(navigationalChild);
                 }
                 else
                 {
-                    return pointer.RightChild as Leaf;
+                    // Or return right child if it is leaf
+                    return parent.RightChild as Leaf;
                 }
-                
+
             }
 
-            
+
         }
+
+        /// <summary>
+        ///  FindRange method
+        ///  Public method of range search
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="result">List of searching elements</param>
+        public void FindRange(T x1, T y1, T x2, T y2, ref List<TData> result)
+        {
+            FindRange(x1, y1, x2, y2, RootNode, true, ref result);
+        }
+
+
+        /// <summary>
+        ///  FindRange method
+        ///  Method for searching elements in concrete range
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="node"></param>
+        /// <param name="xDimension">True is first dimension</param>
+        /// <param name="result">List of searching elements</param>
+        private void FindRange(T x1, T y1, T x2, T y2, Node node, bool xDimension, ref List<TData> result)
+        {
+            if (node != null)
+            {
+                // When get leaf, control its coordinates
+                // and add to result list if they in the range
+                if (node is Leaf leaf)
+                {
+                    if (IsInsideRangeX(x1, x2, leaf) &&
+                        IsInsideRangeY(y1, y2, leaf))
+                    {
+                        result.Add(leaf.Data);
+                    }
+                }
+                // Actions for navigation nodes
+                else
+                {
+                    NavigationalNode navigational = node as NavigationalNode;
+                    // Search in first dimension
+                    if (xDimension)
+                    {
+                        // If whole interval is inside the range go to second dimension
+                        if (x1.CompareTo(navigational.Min) <= 0 &&
+                            navigational.Max.CompareTo(x2) <= 0)
+                        {
+                            FindRange(x1, y1, x2, y2, navigational.OtherDimensionNode, !xDimension, ref result);
+                        }
+                        // If part of interval is inside the range go find to both children
+                        else if (navigational.Min.CompareTo(x1) <= 0 ||
+                            x2.CompareTo(navigational.Max) <= 0)
+                        {
+                            FindRange(x1, y1, x2, y2, navigational.LeftChild, xDimension, ref result);
+                            FindRange(x1, y1, x2, y2, navigational.RightChild, xDimension, ref result);
+                        }
+                    }
+                    // Search in second dimension
+                    else
+                    {
+                        // If whole interval is inside the range look to all leafs of subtree
+                        if (y1.CompareTo(navigational.Min) <= 0 &&
+                            navigational.Max.CompareTo(y2) <= 0)
+                        {
+                            LookAllSubtree(x1, y1, x2, y2, navigational, ref result);
+                        }
+                        // If part of interval is inside the range go find to both children
+                        else if (navigational.Min.CompareTo(y1) <= 0 &&
+                            y2.CompareTo(navigational.Max) <= 0)
+                        {
+                            FindRange(x1, y1, x2, y2, navigational.LeftChild, xDimension, ref result);
+                            FindRange(x1, y1, x2, y2, navigational.RightChild, xDimension, ref result);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///  LookAllSubtree method
+        ///  Take every leaf of subtree and
+        ///  control its coordinates. If they
+        ///  are inside range add to result list
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="node">Root of subtree</param>
+        /// <param name="result">List of searching elements</param>
+        private void LookAllSubtree(T x1, T y1, T x2, T y2, NavigationalNode node, ref List<TData> result)
+        {
+            // Find the most left child in subtree
+            Leaf pointer = GetMostLeftChild(node);
+            do
+            {
+                // Control leaf coordinates and add to 
+                // result list if they are inside range
+                if (IsInsideRangeX(x1, x2, pointer) &&
+                    IsInsideRangeY(y1, y2, pointer))
+                {
+                    result.Add(pointer.Data);
+                }
+                // Go to next leaf
+                pointer = pointer.RightSibling;
+            // End when all leafs was controlled
+            } while (pointer != null);
+        }
+
+        /// <summary>
+        ///  GetMostLeftChild method
+        ///  Returns most left child in subtree
+        /// </summary>
+        /// <param name="node">Subtree root</param>
+        /// <returns>Most left child</returns>
+        private Leaf GetMostLeftChild(NavigationalNode node)
+        {
+            Node pointer = node.LeftChild;
+            if (pointer is Leaf leaf) return leaf;
+            else return GetMostLeftChild(pointer as NavigationalNode);
+        }
+
+
+        /// <summary>
+        ///  Find method
+        ///  Return data of leaf in specific coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>TData</returns>
+        public TData Find(T x, T y)
+        {
+            return FindLeaf(x, y).Data;
+        }
+
+
+        /// <summary>
+        ///  FindLeaf method
+        ///  Returns leaf with specific coordinates of data
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>Leaf</returns>
+        private Leaf FindLeaf(T x, T y)
+        {
+            // If tree have only one element so root is leaf
+            // control its coordinate and return if they accepted
+            // else return null
+            if (RootNode != null && RootNode is Leaf root)
+            {
+                if (root.Data.X.CompareTo(x) == 0 &&
+                    root.Data.Y.CompareTo(y) == 0)
+                {
+                    return root;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            NavigationalNode pointer = RootNode as NavigationalNode;
+            while (true)
+            {
+                if (pointer == null) return null;
+                // Control if one of children of current node
+                // is searching node and return it if yes
+                Node child = pointer.LeftChild;
+                if (HasMatch(x, y, child))
+                {
+                    return child as Leaf;
+                }
+                child = pointer.RightChild;
+                if (HasMatch(x, y, child))
+                {
+                    return child as Leaf;
+                }
+                // Control interval of children of current node
+                // If searching node is inside of one of them
+                // go there
+                NavigationalNode nextPointer = null;
+                if (IsInsideRange(x, pointer.LeftChild))
+                {
+                    nextPointer = pointer.LeftChild as NavigationalNode;
+                }
+                else if (IsInsideRange(x, pointer.RightChild))
+                {
+                    nextPointer = pointer.RightChild as NavigationalNode;
+                }
+                pointer = nextPointer;
+            }
+        }
+
+        /// <summary>
+        ///  IsInsideRange method
+        ///  Control if node is in searching range
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private bool IsInsideRange(T x, Node node)
+        {
+            return node != null &&
+                node is NavigationalNode navigationalNode &&
+                navigationalNode.Min.CompareTo(x) <= 0 &&
+                x.CompareTo(navigationalNode.Max) <= 0;
+        }
+
+        /// <summary>
+        ///  IsInsideRangeX method
+        ///  Control if current leaf is inside range
+        ///  by x dimension
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="x2"></param>
+        /// <param name="leaf">Current leaf</param>
+        /// <returns></returns>
+        private bool IsInsideRangeX(T x1, T x2, Leaf leaf)
+        {
+            return x1.CompareTo(leaf.Data.X) <= 0 &&
+                leaf.Data.X.CompareTo(x2) <= 0;
+        }
+
+        /// <summary>
+        ///  IsInsideRangeY method
+        ///  Control if current leaf is inside range
+        ///  by y dimension
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="x2"></param>
+        /// <param name="leaf">Current leaf</param>
+        /// <returns></returns>
+        private bool IsInsideRangeY(T y1, T y2, Leaf leaf)
+        {
+            return y1.CompareTo(leaf.Data.Y) <= 0 &&
+                leaf.Data.Y.CompareTo(y2) <= 0;
+        }
+
+        /// <summary>
+        ///  HasMatch method
+        ///  Control if current node is leaf
+        ///  and has coordinates that are needed
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private bool HasMatch(T x, T y, Node node)
+        {
+            return node != null &&
+                node is Leaf leaf &&
+                leaf.Data.X.CompareTo(x) == 0 &&
+                leaf.Data.Y.CompareTo(y) == 0;
+        }
+
+
 
         public abstract class Node
         {
             public bool XDimension { get; set; }
-            public CommonNode Parent { get; set; }
+            public NavigationalNode Parent { get; set; }
         }
 
-        public class CommonNode : Node
+        public class NavigationalNode : Node
         {
             public T Min { get; set; }
             public T Max { get; set; }
-            
+
             public Node LeftChild { get; set; }
             public Node RightChild { get; set; }
-            public CommonNode OtherDimensionNode { get; set; }
-            
+            public NavigationalNode OtherDimensionNode { get; set; }
+
         }
 
         public class Leaf : Node
