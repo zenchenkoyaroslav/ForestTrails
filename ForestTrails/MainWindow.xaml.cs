@@ -478,12 +478,13 @@ namespace ForestTrails
             {
                 double x1, y1, x2, y2;
                 bool success = Double.TryParse(x1TextBox.Text, out x1);
-                success &= Double.TryParse(x1TextBox.Text, out y1);
-                success &= Double.TryParse(x1TextBox.Text, out x2);
-                success &= Double.TryParse(x1TextBox.Text, out y2);
+                success &= Double.TryParse(y1TextBox.Text, out y1);
+                success &= Double.TryParse(x2TextBox.Text, out x2);
+                success &= Double.TryParse(y2TextBox.Text, out y2);
                 if (!success) throw new InvalidCastException();
 
-                List<ICrossroad> crossroads = GlobalRangeTree.FindRange(x1, y1, x2, y2);
+                List<ICrossroad> crossroads = new List<ICrossroad>();
+                GlobalRangeTree.FindRange(x1, y1, x2, y2, ref crossroads);
                 foreach (var children in Canvas.Children)
                 {
                     foreach (var crossroad in crossroads)
