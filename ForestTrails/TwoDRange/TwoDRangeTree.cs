@@ -56,13 +56,13 @@ namespace ForestTrails.TwoDRange
                     CommonNode common = node as CommonNode;
                     if (xDimension)
                     {
-                        if (x1.CompareTo(common.Min.X) <= 0 &&
-                            common.Max.X.CompareTo(x2) <= 0)
+                        if (x1.CompareTo(common.Min) <= 0 &&
+                            common.Max.CompareTo(x2) <= 0)
                         {
                             FindRange(x1, y1, x2, y2, common.OtherDimensionNode, !xDimension, ref result);
                         }
-                        else if (common.Min.X.CompareTo(x1) <= 0 ||
-                            x2.CompareTo(common.Max.X) <= 0)
+                        else if (common.Min.CompareTo(x1) <= 0 ||
+                            x2.CompareTo(common.Max) <= 0)
                         {
                             FindRange(x1, y1, x2, y2, common.LeftChild, xDimension, ref result);
                             FindRange(x1, y1, x2, y2, common.RightChild, xDimension, ref result);
@@ -70,13 +70,13 @@ namespace ForestTrails.TwoDRange
                     }
                     else
                     {
-                        if (y1.CompareTo(common.Min.Y) <= 0 &&
-                            common.Max.Y.CompareTo(y2) <= 0)
+                        if (y1.CompareTo(common.Min) <= 0 &&
+                            common.Max.CompareTo(y2) <= 0)
                         {
-                            SubtreeView(x1, y1, x2, y2, common, ref result);
+                            LookAllSubtree(x1, y1, x2, y2, common, ref result);
                         }
-                        else if (common.Min.Y.CompareTo(y1) <= 0 &&
-                            y2.CompareTo(common.Max.Y) <= 0)
+                        else if (common.Min.CompareTo(y1) <= 0 &&
+                            y2.CompareTo(common.Max) <= 0)
                         {
                             FindRange(x1, y1, x2, y2, common.LeftChild, xDimension, ref result);
                             FindRange(x1, y1, x2, y2, common.RightChild, xDimension, ref result);
@@ -86,7 +86,7 @@ namespace ForestTrails.TwoDRange
             }
         }
 
-        private void SubtreeView(T x1, T y1, T x2, T y2, CommonNode node, ref List<TData> result)
+        private void LookAllSubtree(T x1, T y1, T x2, T y2, CommonNode node, ref List<TData> result)
         {
             Leaf pointer = GetMostLeftChild(node);
             do
@@ -158,8 +158,8 @@ namespace ForestTrails.TwoDRange
         {
             return node != null &&
                 node is CommonNode commonNode &&
-                commonNode.Min.X.CompareTo(x) <= 0 &&
-                x.CompareTo(commonNode.Max.X) <= 0;
+                commonNode.Min.CompareTo(x) <= 0 &&
+                x.CompareTo(commonNode.Max) <= 0;
         }
 
         private bool IsInsideRangeX(T x1, T x2, Leaf leaf)
@@ -215,13 +215,16 @@ namespace ForestTrails.TwoDRange
                 if (xDimension)
                 {
                     Array.Sort(datas, comparerByX);
+                    node.Min = datas.First().X;
+                    node.Max = datas.Last().X;
                 }
                 else
                 {
                     Array.Sort(datas, comparerByY);
+                    node.Min = datas.First().Y;
+                    node.Max = datas.Last().Y;
                 }
-                node.Min = datas.First();
-                node.Max = datas.Last();
+                
 
                 TData[] datasL = datas.Take(datas.Length / 2).ToArray();
                 TData[] datasR = datas.Skip(datas.Length / 2).ToArray();
@@ -312,8 +315,8 @@ namespace ForestTrails.TwoDRange
 
         public class CommonNode : Node
         {
-            public TData Min { get; set; }
-            public TData Max { get; set; }
+            public T Min { get; set; }
+            public T Max { get; set; }
             
             public Node LeftChild { get; set; }
             public Node RightChild { get; set; }
