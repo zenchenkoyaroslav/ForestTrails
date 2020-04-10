@@ -57,7 +57,7 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
             </ToolBarTray.Background>
             <ToolBar Name="GlobalModeToolBar" Margin="0,0,-105.015,-114">
-                <RadioButton Checked="GlobalRunModeRadioButton_Checked" IsChecked="True" x:Name="GlobalRunModeRadioButton" GroupName="GlobalModeTypeRadioGroup" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="116.762" Height="45">
+                <RadioButton Checked="GlobalRunModeRadioButton_Checked" x:Name="GlobalRunModeRadioButton" GroupName="GlobalModeTypeRadioGroup" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="116.762" Height="45">
                     <StackPanel Height="35" Width="106.762" Orientation="Horizontal">
                         <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/play icon.png"/>
                         <TextBlock TextWrapping="Wrap" Text="Run Mode" Width="75.373" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
@@ -139,6 +139,6 @@
         <TextBox x:Name="y2TextBox" HorizontalAlignment="Left" Height="23" Margin="261.787,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
         <TextBox x:Name="x2TextBox" HorizontalAlignment="Left" Height="23" Margin="188.243,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
         <TextBox x:Name="y1TextBox" HorizontalAlignment="Left" Height="23" Margin="114.999,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
-        <Button x:Name="FindButton" Content="Find" HorizontalAlignment="Left" Margin="332.5,0,0,19.52" VerticalAlignment="Bottom" Width="75"/>
+        <Button Click="FindButton_Click" x:Name="FindButton" Content="Find" HorizontalAlignment="Left" Margin="332.5,0,0,19.52" VerticalAlignment="Bottom" Width="75"/>
     </Grid>
 </Window>

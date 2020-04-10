@@ -47,6 +47,8 @@ namespace ForestTrails
                 ForestPaths newForestPath = (ForestPaths)formatter.Deserialize(fs);
                 GlobalForestPaths.Update(newForestPath);
                 DrawForrestPaths();
+                List<ICrossroad> crossroads = GlobalForestPaths.GetCrossroads();
+                GlobalRangeTree.Build(crossroads.ToArray());
             }
         }
 
@@ -469,5 +471,37 @@ namespace ForestTrails
         {
             Process.Start("notepad.exe", "./HelpFile.txt");
         }
+
+        private void FindButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                double x1, y1, x2, y2;
+                bool success = Double.TryParse(x1TextBox.Text, out x1);
+                success &= Double.TryParse(x1TextBox.Text, out y1);
+                success &= Double.TryParse(x1TextBox.Text, out x2);
+                success &= Double.TryParse(x1TextBox.Text, out y2);
+                if (!success) throw new InvalidCastException();
+
+                List<ICrossroad> crossroads = GlobalRangeTree.FindRange(x1, y1, x2, y2);
+                foreach (var children in Canvas.Children)
+                {
+                    foreach (var crossroad in crossroads)
+                    {
+                        if(children is Ellipse ellipse && ellipse.Name == crossroad.Key)
+                        {
+                            ellipse.Highlight(GlobalForestPaths);
+                        }
+                    }
+                }
+            } catch(InvalidCastException ex)
+            {
+                MessageBox.Show("Invalid input", "Error");
+            }
+            
+
+            
+        }
     }
 }
+
