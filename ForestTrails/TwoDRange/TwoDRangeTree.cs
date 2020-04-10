@@ -29,90 +29,12 @@ namespace ForestTrails.TwoDRange
         public TwoDRangeTree(TData[] datas, IComparer<TData> x, IComparer<TData> y)
             : this(x, y)
         {
-            RootNode = Build(datas);
+            Build(datas);
         }
 
-        public void Add(TData data)
-        {
-            if(RootNode == null)
-            {
-                RootNode = new Leaf();
-                (RootNode as Leaf).Data = data;
-            }
-            else
-            {
-                Add(data, RootNode, true);
-            }
-        }
 
-        private void Add(TData data, Node node, bool xDimension)
+        public List<TData> FindRange(T x1, T y1, T x2, T y2, ref List<TData> result)
         {
-            if(node is CommonNode commonNode)
-            {
-                if (xDimension)
-                {
-                    Add(data, commonNode.OtherDimensionNode, !xDimension);
-                    if(commonNode.RightChild is CommonNode rightChild &&
-                        comparerByX.Compare(rightChild.Min, data) <= 0)
-                    {
-                        Add(data, rightChild, xDimension);
-                    }
-                    else
-                    {
-                        Add(data, commonNode.LeftChild, xDimension);
-                    }
-                }
-                else
-                {
-                    if(commonNode.RightChild is CommonNode rightChild &&
-                        comparerByY.Compare(rightChild.Min, data) <= 0)
-                    {
-                        Add(data, rightChild, xDimension);
-                    }
-                    else
-                    {
-                        Add(data, commonNode.LeftChild, xDimension);
-                    }
-                }
-            }
-            else
-            {
-                Leaf leaf = node as Leaf;
-                CommonNode parent = leaf.Parent;
-                TData[] datas = { data, leaf.Data };
-                if (parent == null)
-                {
-                    RootNode = BuildSubtree(datas, parent, xDimension);
-                }
-                else 
-                {
-                    CommonNode pointer;
-                    if (leaf == parent.LeftChild)
-                    {
-                        parent.LeftChild = BuildSubtree(datas, parent, xDimension);
-                        pointer = parent.LeftChild as CommonNode;
-                    }
-                    else
-                    {
-                        parent.RightChild = BuildSubtree(datas, parent, xDimension);
-                        pointer = parent.RightChild as CommonNode;
-                    }
-                    Leaf rightChild = pointer.RightChild as Leaf;
-                    Leaf rightSibling = GetRightSibling(rightChild);
-                    rightSibling.LeftSibling = rightChild;
-                    rightChild.RightSibling = rightSibling;
-                }
-
-                if (xDimension)
-                {
-                    Count++;
-                }
-            }
-        }
-
-        public List<TData> FindRange(T x1, T y1, T x2, T y2)
-        {
-            List<TData> result = new List<TData>();
             FindRange(x1, y1, x2, y2, RootNode, true, ref result);
             return result;
         }
@@ -164,7 +86,7 @@ namespace ForestTrails.TwoDRange
             }
         }
 
-        private void SubtreeView(T x1, T y1, T x2, T y2,CommonNode node, ref List<TData> result)
+        private void SubtreeView(T x1, T y1, T x2, T y2, CommonNode node, ref List<TData> result)
         {
             Leaf pointer = GetMostLeftChild(node);
             do
@@ -260,7 +182,13 @@ namespace ForestTrails.TwoDRange
                 leaf.Data.Y.CompareTo(y) == 0;
         }
 
-        public CommonNode Build(TData[] datas)
+        public void Build(TData[] datas)
+        {
+            RootNode = BuildFromRoot(datas);
+            BuildSiblingLinks(RootNode);
+        }
+
+        private CommonNode BuildFromRoot(TData[] datas)
         {
             if (datas.Length == 0 || datas == null) return null;
             Count = datas.Length;
@@ -306,13 +234,6 @@ namespace ForestTrails.TwoDRange
             {
                 Leaf leaf = new Leaf();
                 leaf.Data = datas.First();
-
-                Leaf leftSibling = GetLeftSibling(leaf);
-                if(leftSibling != null)
-                {
-                    leftSibling.RightSibling = leaf;
-                    leaf.LeftSibling = leftSibling;
-                }
                 pointer = leaf;
             }
             
@@ -326,107 +247,61 @@ namespace ForestTrails.TwoDRange
             return pointer;
         }
 
-        private Leaf GetLeftSibling(Leaf leaf)
+        private void BuildSiblingLinks(Node node)
         {
-            return LeftSibGoUp(leaf);
-        }
-
-        private Leaf LeftSibGoUp(Node node)
-        {
-            if (node.Parent != null)
+            if(node is CommonNode common)
             {
-                CommonNode parent = node.Parent;
-                if (parent.LeftChild != node)
+                if (common.XDimension)
                 {
-                    return LeftSibGoLeft(parent);
+                    BuildSiblingLinks(common.OtherDimensionNode);
                 }
-                else
-                {
-                    return LeftSibGoUp(parent);
-                }
+                BuildSiblingLinks(common.LeftChild);
             }
-            else
+            else if(node is Leaf leaf)
             {
-                return null;
-            }
-            
-        }
-
-        private Leaf LeftSibGoLeft(CommonNode parent)
-        {
-            Node node = parent.LeftChild;
-            if(node is Leaf leaf)
-            {
-                return leaf;
-            }
-            else
-            {
-                return LeftSibGoRight(node as CommonNode);
+                BuildLinks(leaf);
             }
         }
 
-        private Leaf LeftSibGoRight(CommonNode parent)
+        private void BuildLinks(Leaf leaf)
         {
-            Node node = parent.RightChild;
-            if(node is Leaf leaf)
+            Leaf rightSibling = GetRightSibling(leaf);
+            if(rightSibling != null)
             {
-                return leaf;
-            }
-            else
-            {
-                return LeftSibGoRight(node as CommonNode);
+                leaf.RightSibling = rightSibling;
+                rightSibling.LeftSibling = leaf;
+                BuildLinks(leaf.RightSibling);
             }
         }
 
         private Leaf GetRightSibling(Leaf leaf)
         {
-            return RightSibGoUp(leaf);
+            return GoUp(leaf);
         }
 
-        private Leaf RightSibGoUp(Node node)
+        private Leaf GoUp(Node node)
         {
-            if (node.Parent != null)
+            CommonNode pointer = node.Parent;
+            
+            if (pointer == null) return null;
+            if (node == pointer.RightChild)
             {
-                CommonNode parent = node.Parent;
-                if (parent.RightChild != node)
+                return GoUp(pointer);
+            }
+            else
+            {
+                if(pointer.RightChild is CommonNode commonChild)
                 {
-                    return RightSibGoRight(parent);
+                    return GetMostLeftChild(commonChild);
                 }
                 else
                 {
-                    return RightSibGoUp(parent);
+                    return pointer.RightChild as Leaf;
                 }
+                
             }
-            else
-            {
-                return null;
-            }
-        }
 
-        private Leaf RightSibGoRight(CommonNode parent)
-        {
-            Node node = parent.RightChild;
-            if (node is Leaf leaf)
-            {
-                return leaf;
-            }
-            else
-            {
-                return RightSibGoLeft(node as CommonNode);
-            }
-        }
-
-        private Leaf RightSibGoLeft(CommonNode parent)
-        {
-            Node node = parent.LeftChild;
-            if (node is Leaf leaf)
-            {
-                return leaf;
-            }
-            else
-            {
-                return RightSibGoLeft(node as CommonNode);
-            }
+            
         }
 
         public abstract class Node
