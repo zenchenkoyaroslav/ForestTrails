@@ -93,7 +93,7 @@
                 <Button Name="ResetButton" Click="ResetButton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="110.4">
                     <StackPanel Height="35" Width="106.761" Orientation="Horizontal">
                         <Image Height="30" HorizontalAlignment="Left" Width="30" Source="Resourses/reset icon.png"/>
-                        <TextBlock TextWrapping="Wrap" Text="Reset Paths" Width="75.373" FontSize="14.667" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26.5" Margin="0,8.5,0,0"/>
+                        <TextBlock TextWrapping="Wrap" Text="Reset Highlight" Width="75.373" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32.5" Margin="0,2.5,0,0"/>
                     </StackPanel>
                 </Button>
                 <Button Click="GenerateMatrixButton_Click" Name="GenerateMatrixButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="111.54">

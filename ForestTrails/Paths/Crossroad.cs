@@ -44,5 +44,9 @@ namespace ForestTrails.Paths
 
         public abstract CrossroadHighlightedDrawInformation GetHighlightedDrawInformation();
 
+        public override string ToString()
+        {
+            return $"Name: {Key}, X = {X}, Y = {Y}";
+        }
     }
 }

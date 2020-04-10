@@ -398,6 +398,13 @@ namespace ForestTrails
                 }
             }
             highlightedLines.Clear();
+            foreach(var child in Canvas.Children)
+            {
+                if(child is Ellipse ellipse)
+                {
+                    ellipse.Unhighlight(GlobalForestPaths);
+                }
+            }
         }
 
         public void Line_MouseEnter(object sender, MouseEventArgs e)
@@ -495,7 +502,14 @@ namespace ForestTrails
                         }
                     }
                 }
-            } catch(InvalidCastException ex)
+                StringBuilder searchOutput = new StringBuilder();
+                foreach (var crossroad in crossroads)
+                {
+                    searchOutput.Append(crossroad.ToString());
+                    searchOutput.Append("\n");
+                }
+                NotepadHelper.ShowMessage(searchOutput.ToString());
+            } catch(InvalidCastException)
             {
                 MessageBox.Show("Invalid input", "Error");
             }
