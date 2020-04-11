@@ -139,6 +139,11 @@
         <TextBox x:Name="y2TextBox" HorizontalAlignment="Left" Height="23" Margin="261.787,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
         <TextBox x:Name="x2TextBox" HorizontalAlignment="Left" Height="23" Margin="188.243,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
         <TextBox x:Name="y1TextBox" HorizontalAlignment="Left" Height="23" Margin="114.999,0,0,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
-        <Button Click="FindButton_Click" x:Name="FindButton" Content="Find" HorizontalAlignment="Left" Margin="332.5,0,0,19.52" VerticalAlignment="Bottom" Width="75"/>
+        <Button Click="FindRangeButton_Click" x:Name="FindRangeButton" Content="Range Search" HorizontalAlignment="Left" Margin="332.5,0,0,19.52" VerticalAlignment="Bottom" Width="75"/>
+        <TextBox x:Name="yTextBox" HorizontalAlignment="Right" Height="23" Margin="0,0,317.546,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
+        <TextBox x:Name="xTextBox" HorizontalAlignment="Right" Height="23" Margin="0,0,384.62,17.49" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48.667"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,438.287,21.52" TextWrapping="Wrap" Text="x:" VerticalAlignment="Bottom"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,0,371.213,21.52" TextWrapping="Wrap" Text="y:" VerticalAlignment="Bottom"/>
+        <Button Click="FindButton_Click" x:Name="FindButton" Content="Single Search" HorizontalAlignment="Right" Margin="0,0,237.546,19.52" VerticalAlignment="Bottom" Width="75"/>
     </Grid>
 </Window>

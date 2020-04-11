@@ -47,8 +47,7 @@ namespace ForestTrails
                 ForestPaths newForestPath = (ForestPaths)formatter.Deserialize(fs);
                 GlobalForestPaths.Update(newForestPath);
                 DrawForrestPaths();
-                List<ICrossroad> crossroads = GlobalForestPaths.GetCrossroads();
-                GlobalRangeTree.Build(crossroads.ToArray());
+                BuildRangeTree();
             }
         }
 
@@ -177,6 +176,7 @@ namespace ForestTrails
             try
             {
                 invoker.Execute();
+                BuildRangeTree();
             }
             catch (ArgumentException ex)
             {
@@ -333,8 +333,7 @@ namespace ForestTrails
                         ForestPaths newForestPath = (ForestPaths)formatter.Deserialize(fs);
                         GlobalForestPaths.Update(newForestPath);
                         DrawForrestPaths();
-                        List<ICrossroad> crossroads = GlobalForestPaths.GetCrossroads();
-                        GlobalRangeTree.Build(crossroads.ToArray());
+                        BuildRangeTree();
                     }
                     catch (SerializationException)
                     {
@@ -342,6 +341,12 @@ namespace ForestTrails
                     }
                 }
             }
+        }
+
+        private void BuildRangeTree()
+        {
+            List<ICrossroad> crossroads = GlobalForestPaths.GetCrossroads();
+            GlobalRangeTree.Build(crossroads.ToArray());
         }
 
         private void DrawForrestPaths()
@@ -479,7 +484,7 @@ namespace ForestTrails
             Process.Start("notepad.exe", "./HelpFile.txt");
         }
 
-        private void FindButton_Click(object sender, RoutedEventArgs e)
+        private void FindRangeButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -513,9 +518,31 @@ namespace ForestTrails
             {
                 MessageBox.Show("Invalid input", "Error");
             }
-            
+        }
 
-            
+        private void FindButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                double x, y;
+                bool success = Double.TryParse(xTextBox.Text, out x);
+                success &= Double.TryParse(yTextBox.Text, out y);
+                if (!success) throw new InvalidCastException();
+
+                List<ICrossroad> crossroads = new List<ICrossroad>();
+                ICrossroad crossroad = GlobalRangeTree.Find(x, y);
+                foreach (var children in Canvas.Children)
+                {    
+                    if (children is Ellipse ellipse && ellipse.Name == crossroad.Key)
+                    {
+                        ellipse.Highlight(GlobalForestPaths);
+                    }
+                }
+            }
+            catch (InvalidCastException)
+            {
+                MessageBox.Show("Invalid input", "Error");
+            }
         }
     }
 }
