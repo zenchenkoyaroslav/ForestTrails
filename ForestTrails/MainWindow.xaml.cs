@@ -531,6 +531,7 @@ namespace ForestTrails
 
                 List<ICrossroad> crossroads = new List<ICrossroad>();
                 ICrossroad crossroad = GlobalRangeTree.Find(x, y);
+                if (crossroad == null) throw new InvalidCastException();
                 foreach (var children in Canvas.Children)
                 {    
                     if (children is Ellipse ellipse && ellipse.Name == crossroad.Key)

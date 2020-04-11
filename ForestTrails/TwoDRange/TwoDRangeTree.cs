@@ -376,7 +376,9 @@ namespace ForestTrails.TwoDRange
         /// <returns>TData</returns>
         public TData Find(T x, T y)
         {
-            return FindLeaf(x, y).Data;
+            Leaf leaf = FindLeaf(x, y);
+            if (leaf == null) return default;
+            return leaf.Data;
         }
 
 
@@ -501,13 +503,13 @@ namespace ForestTrails.TwoDRange
 
 
 
-        public abstract class Node
+        private abstract class Node
         {
             public bool XDimension { get; set; }
             public NavigationalNode Parent { get; set; }
         }
 
-        public class NavigationalNode : Node
+        private class NavigationalNode : Node
         {
             public T Min { get; set; }
             public T Max { get; set; }
@@ -518,7 +520,7 @@ namespace ForestTrails.TwoDRange
 
         }
 
-        public class Leaf : Node
+        private class Leaf : Node
         {
             public TData Data { get; set; }
             public Leaf LeftSibling { get; set; }
