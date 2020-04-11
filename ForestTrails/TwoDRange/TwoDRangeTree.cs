@@ -284,6 +284,12 @@ namespace ForestTrails.TwoDRange
                         {
                             FindRange(x1, y1, x2, y2, navigational.OtherDimensionNode, !xDimension, ref result);
                         }
+                        // If whole interval is out of range do nothing
+                        else if (navigational.Max.CompareTo(x1) <= 0 ||
+                            navigational.Min.CompareTo(x2) >= 0)
+                        {
+
+                        }
                         // If part of interval is inside the range go find to both children
                         else if (navigational.Min.CompareTo(x1) <= 0 ||
                             x2.CompareTo(navigational.Max) <= 0)
@@ -302,7 +308,7 @@ namespace ForestTrails.TwoDRange
                             LookAllSubtree(x1, y1, x2, y2, navigational, ref result);
                         }
                         // If part of interval is inside the range go find to both children
-                        else if (navigational.Min.CompareTo(y1) <= 0 &&
+                        else if (navigational.Min.CompareTo(y1) <= 0 ||
                             y2.CompareTo(navigational.Max) <= 0)
                         {
                             FindRange(x1, y1, x2, y2, navigational.LeftChild, xDimension, ref result);
@@ -329,6 +335,9 @@ namespace ForestTrails.TwoDRange
         {
             // Find the most left child in subtree
             Leaf pointer = GetMostLeftChild(node);
+            // If something went wrong and not all links was built
+            if (pointer.RightSibling == null)
+                BuildLinks(pointer);
             do
             {
                 // Control leaf coordinates and add to 
@@ -395,6 +404,7 @@ namespace ForestTrails.TwoDRange
                     return null;
                 }
             }
+            // Start with root and go down
             NavigationalNode pointer = RootNode as NavigationalNode;
             while (true)
             {
