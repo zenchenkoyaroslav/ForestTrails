@@ -10,7 +10,7 @@ namespace ForestTrails.Paths
     {
         public int Compare(ICrossroad first, ICrossroad second)
         {
-            return first.Position.X.CompareTo(second.Position.X);
+            return first.Position.Y.CompareTo(second.Position.Y);
         }
     }
 }
