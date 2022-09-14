@@ -48,7 +48,7 @@ namespace ForestTrails.TwoDRange
         /// </summary>
         /// <param name="datas">Elements stored in leafs</param>
         /// <returns>Root of tree</returns>
-        private NavigationalNode BuildFromRoot(TData[] datas)
+        private Node BuildFromRoot(TData[] datas)
         {
             if (datas.Length == 0 || datas == null)
             {
@@ -57,7 +57,7 @@ namespace ForestTrails.TwoDRange
             }
             Count = datas.Length;
             bool xDimension = true;
-            return (NavigationalNode)BuildTree(datas, null, xDimension);
+            return BuildTree(datas, null, xDimension);
         }
 
         /// <summary>

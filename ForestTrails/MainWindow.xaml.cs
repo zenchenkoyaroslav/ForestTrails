@@ -41,10 +41,17 @@ namespace ForestTrails
             InitializeComponent();
             InitializeLegend();
             GlobalRangeTree = new TwoDRangeTree<ICrossroad, double>(comparerByX, comparerByY);
-            using (FileStream fs = new FileStream("./sample.txt", FileMode.Open))
+            using (FileStream fs = new FileStream("..\\..\\Resourses\\sample.txt", FileMode.OpenOrCreate))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                ForestPaths newForestPath = (ForestPaths)formatter.Deserialize(fs);
+                ForestPaths newForestPath;
+                if (fs.Length > 0)
+                {
+                    newForestPath = (ForestPaths)formatter.Deserialize(fs);
+                } else
+                {
+                    newForestPath = new ForestPaths();
+                }
                 GlobalForestPaths.Update(newForestPath);
                 DrawForrestPaths();
                 BuildRangeTree();
@@ -481,7 +488,7 @@ namespace ForestTrails
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("notepad.exe", "./HelpFile.txt");
+            Process.Start("notepad.exe", "..\\..\\Resourses\\HelpFile.txt");
         }
 
         private void FindRangeButton_Click(object sender, RoutedEventArgs e)
